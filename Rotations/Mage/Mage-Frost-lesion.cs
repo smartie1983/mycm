@@ -22,7 +22,27 @@ namespace CloudMagic.Rotation
 
         public override Form SettingsForm { get; set; }
 
-
+        public override int SINGLE 
+		{
+			get 
+			{ 
+				return 1; 
+			} 
+		}
+		public override int CLEAVE 
+		{ 
+			get 
+			{ 
+				return 99;
+			} 
+		}
+        public override int AOE 
+		{ 
+			get 
+			{ 
+				return 99; 
+			} 
+		}
         public override void Initialize()
         {
             Log.Write("Welcome to Haste/Crit Frost Mage", Color.Green);
@@ -37,7 +57,7 @@ namespace CloudMagic.Rotation
         {
             if (combatRoutine.Type == RotationType.SingleTarget) // Do Single Target Stuff here
             {
-                if (WoW.CanCast("Summon Water Elemental") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && !WoW.HasPet)
+                if (WoW.CanCast("Summon Water Elemental") && WoW.Talent(1) != 2 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && !WoW.HasPet)
                 {
                     WoW.CastSpell("Summon Water Elemental");
                     return;
@@ -47,10 +67,7 @@ namespace CloudMagic.Rotation
 
                 {
                     //Movement Control
-                    if (WoW.CanCast("Ice Floes") && WoW.IsMoving && !WoW.PlayerHasBuff("Ice Floes"))
-                    {
-                        WoW.CastSpell("Ice Floes");
-                    }
+
                     //Insta-Cast Flurry on Proc and ice lance for shatter. 
                     if (WoW.CanCast("Flurry") && WoW.PlayerHasBuff("Brain Freeze"))
                     {
@@ -60,17 +77,6 @@ namespace CloudMagic.Rotation
                     {
                         WoW.CastSpell("Ice Lance");
                     }
-                    //RoP Control
-                    if (WoW.CanCast("Rune of Power") && !WoW.PlayerHasBuff("Rune of Power") && WoW.SpellCooldownTimeRemaining("Icy Veins") >= 120)
-                    {
-                        WoW.CastSpell("Rune of Power");
-                        return;
-                    }
-                    //Ray of Frost control
-                    if (WoW.CanCast("Ray of Frost") && WoW.PlayerHasBuff("Rune of Power") && WoW.PlayerSpellCharges("Rune of Power") == 0 && WoW.SpellCooldownTimeRemaining("Icy Veins") >= 60)
-                    {
-                        WoW.CastSpell("Ray of Frost");
-                    }
 
                     // FoF Creation
                     if (WoW.PlayerBuffStacks("Chain Reaction") >= 1 && WoW.SpellCooldownTimeRemaining("Icy Veins") >= 30 && !WoW.WasLastCasted("Flurry"))
@@ -79,25 +85,19 @@ namespace CloudMagic.Rotation
                         {
                             WoW.CastSpell("Frozen Orb");
                         }
-                        if (WoW.CanCast("Frozen Touch") && WoW.PlayerBuffStacks("Fingers of Frost") <= 1 && WoW.IsSpellOnCooldown("Frozen Orb") && !WoW.WasLastCasted("Frozen Orb"))
+						if (WoW.CanCast("Blizzard") && WoW.PlayerHasBuff("Free Blizzard"))
+						{
+							WoW.CastSpell("Blizzard");
+							return;
+						}
+                        if (WoW.CanCast("Frozen Touch") && !WoW.IsMoving && WoW.PlayerBuffStacks("Fingers of Frost") <= 1 && WoW.IsSpellOnCooldown("Frozen Orb") && !WoW.WasLastCasted("Frozen Orb"))
                         {
                             WoW.CastSpell("Frozen Touch");
                         }
 
-                        if (WoW.CanCast("Ebonbolt") && !WoW.PlayerHasBuff("Fingers of Frost") && !WoW.PlayerHasBuff("Brain Freeze") && WoW.SpellCooldownTimeRemaining("Icy Veins") >= 45)
+                        if (WoW.CanCast("Ebonbolt") && !WoW.IsMoving && !WoW.PlayerHasBuff("Fingers of Frost") && !WoW.PlayerHasBuff("Brain Freeze") && WoW.SpellCooldownTimeRemaining("Icy Veins") >= 45)
                         {
                             WoW.CastSpell("Ebonbolt");
-                            return;
-                        }
-                        //Waterjet on cooldown within parameters		
-                        if (WoW.CanCast("Water Jet") && WoW.PlayerBuffStacks("Fingers of Frost") <= 1 && !WoW.WasLastCasted("Frozen Touch") && !WoW.WasLastCasted("Frozen Orb") &&
-                            WoW.IsSpellOnCooldown("Frozen Orb") && WoW.IsSpellOnCooldown("Frozen Touch"))
-                        {
-                            WoW.CastSpell("Water Jet");
-                        }
-                        if (WoW.CanCast("Frostbolt") && WoW.TargetHasDebuff("Water Jet"))
-                        {
-                            WoW.CastSpell("Frostbolt");
                             return;
                         }
                     }
@@ -126,7 +126,7 @@ namespace CloudMagic.Rotation
                         return;
                     }
                     //Frostbolt Control
-                    if (!WoW.PlayerHasBuff("Brain Freeze") && !WoW.WasLastCasted("Flurry"))
+                    if (!WoW.PlayerHasBuff("Brain Freeze") && !WoW.WasLastCasted("Flurry") && !WoW.IsMoving)
                     {
                         if (WoW.CanCast("Frostbolt") && !WoW.PlayerHasBuff("Fingers of Frost") && !WoW.WasLastCasted("Frostbolt"))
                         {
@@ -145,13 +145,13 @@ namespace CloudMagic.Rotation
                             return;
                         }
                     }
-
-                    //Frost Bomb - i dont use
-                    //if	((WoW.CanCast("Frost Bomb")&&WoW.PlayerHasBuff("Fingers of Frost")&&WoW.PlayerBuffStacks("Fingers of Frost") == 2)&&!WoW.TargetHasDebuff("Frost Bomb")&&!WoW.WasLastCasted("Ice Lance")&&!WoW.WasLastCasted("Rune of Power"))
-                    //		{
-                    //		WoW.CastSpell("Frost Bomb");
-                    //		return;
-                    //		}
+                    if (!WoW.PlayerHasBuff("Brain Freeze") && !WoW.WasLastCasted("Flurry") && WoW.IsMoving)
+                    {
+						if (WoW.CanCast("Ice Lance"))
+						{
+							WoW.CastSpell("Ice Lance");
+						}
+					}
                 }
             }
             if (combatRoutine.Type == RotationType.AOE)
@@ -167,7 +167,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Dupe
-AddonName=badgggggggggerui
+AddonName=smartie
 WoWVersion=Legion - 70100
 [SpellBook.db]
 Spell,116,Frostbolt,D1
@@ -194,7 +194,10 @@ Aura,44544,Fingers of Frost
 Aura,190446,Brain Freeze
 Aura,76613,Mastery: Icicles
 Aura,66,Invisibility
+Aura,195446,Icy Veins2
+Aura,12472,Icy Veins
 Aura,116014,Rune of Power
 Aura,11426,Ice Barrier
 Aura,108839,Ice Floes
+Aura,240555,Free Blizzard
 */

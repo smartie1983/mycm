@@ -1,4 +1,4 @@
-﻿// winifix@gmail.com
+// winifix@gmail.com
 // ReSharper disable UnusedMember.Global
 
 
@@ -43,7 +43,7 @@ namespace CloudMagic.Rotation
 		{ 
 			get 
 			{ 
-				return 99; 
+				return 3; 
 			} 
 		}
         public override Form SettingsForm
@@ -67,7 +67,7 @@ namespace CloudMagic.Rotation
 
         public override void Pulse()
         {
-            if (!WoW.HasTarget || WoW.TargetIsFriend)
+            if (!WoW.HasTarget || WoW.TargetIsFriend && (!WoW.IsMounted || WoW.PlayerHasBuff("Divine Steed")))
             {
                 if (!WoW.PlayerHasBuff("Greater Blessing of Kings"))
                     if (WoW.CanCast("Greater Blessing of Kings"))
@@ -83,69 +83,127 @@ namespace CloudMagic.Rotation
                         return;
                     }
             }
-
-            if (!WoW.HasTarget || !WoW.TargetIsEnemy) return;
-
-            if (WoW.CanCast("Judgment") && WoW.UnitPower >= 5)
-            {
-                WoW.CastSpell("Judgment");
-                return;
-            }
-
-            if (WoW.UnitPower == 0 && WoW.CanCast("Wake of Ashes"))
-            {
-                WoW.CastSpell("Wake of Ashes");
-                return;
-            }
-
-            if (WoW.CanCast("Crusade") && WoW.UnitPower >= 5 && WoW.TargetHasDebuff("Judgment"))
-            {
-                WoW.CastSpell("Crusade");
-                return;
-            }
-
-            //if (WoW.CanCast("Avenging Wrath") && WoW.UnitPower >= 5 && WoW.TargetHasDebuff("Judgment")) {
-            //    WoW.CastSpell("Avenging Wrath");
-            //    return;
-            //}
-
-            if (WoW.CanCast("Execution Sentence") && WoW.UnitPower >= 3 && WoW.TargetHasDebuff("Judgment") && !WoW.TargetHasDebuff("Execution Sentence"))
-            {
-                WoW.CastSpell("Execution Sentence");
-                return;
-            }
-
-            if (WoW.CanCast("Templars Verdict") && WoW.UnitPower >= 3 && WoW.TargetHasDebuff("Judgment"))
-            {
-                WoW.CastSpell("Templars Verdict");
-                return;
-            }
-
-            if (WoW.CanCast("Blade of Justice") && WoW.UnitPower <= 3) // Higher Priority because it can generate 2 holy power in 1 go
-            {
-                WoW.CastSpell("Blade of Justice");
-                return;
-            }
-
-            if (WoW.CanCast("Crusader Strike") && WoW.UnitPower < 5 && WoW.PlayerSpellCharges("Crusader Strike") >= 0)
-            {
-                WoW.CastSpell("Crusader Strike");
-				return;
-            }
-			
-			if (WoW.CanCast("Blade of Justice")) 
-            {
-                WoW.CastSpell("Blade of Justice");
-                return;
-            }
-        }
-    }
+			if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave) // Do Single Target Stuff here
+			{
+				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && (!WoW.IsMounted || WoW.PlayerHasBuff("Divine Steed")))
+				{
+					if (WoW.CanCast("Judgment") && WoW.UnitPower >= 5 && WoW.IsSpellInRange("Judgment"))
+					{
+						WoW.CastSpell("Judgment");
+						return;
+					}			
+					if (WoW.UnitPower == 0 && WoW.CanCast("Wake of Ashes") && WoW.IsSpellInRange("Crusader Strike"))
+					{
+						WoW.CastSpell("Wake of Ashes");
+						return;
+					}
+					if (WoW.CanCast("Crusade") && WoW.UnitPower >= 5 && WoW.TargetHasDebuff("Judgment") && UseCooldowns)
+					{
+						WoW.CastSpell("Crusade");
+						return;
+					}
+					if (WoW.CanCast("Execution Sentence") && WoW.UnitPower >= 3 && WoW.IsSpellInRange("Execution Sentence") && !WoW.TargetHasDebuff("Execution Sentence") && WoW.TargetHasDebuff("Judgment"))
+					{
+						WoW.CastSpell("Execution Sentence");
+						return;
+					}
+					if (WoW.CanCast("Templars Verdict") && WoW.UnitPower >= 3 && WoW.IsSpellInRange("Templars Verdict") && WoW.TargetHasDebuff("Judgment"))
+					{
+						WoW.CastSpell("Templars Verdict");
+						return;
+					}
+					if (WoW.CanCast("Blade of Justice") && WoW.UnitPower <= 3 && WoW.IsSpellInRange("Blade of Justice") && WoW.Talent (4) == 2) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Blade of Justice");
+						return;
+					}
+					if (WoW.CanCast("Göttlicher Hammer") && WoW.UnitPower <= 3 && WoW.IsSpellInRange("Crusader Strike") && WoW.Talent (4) == 3) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Göttlicher Hammer");
+						return;
+					}
+					if (WoW.CanCast("Crusader Strike") && WoW.UnitPower < 5 && WoW.PlayerSpellCharges("Crusader Strike") >= 0 && WoW.IsSpellInRange("Crusader Strike"))
+					{
+						WoW.CastSpell("Crusader Strike");
+						return;
+					}
+					if (WoW.CanCast("Blade of Justice") && WoW.IsSpellInRange("Blade of Justice") && WoW.Talent (4) == 2) 
+					{
+						WoW.CastSpell("Blade of Justice");
+						return;
+					}
+					if (WoW.CanCast("Göttlicher Hammer") && WoW.IsSpellInRange("Crusader Strike") && WoW.Talent (4) == 3) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Göttlicher Hammer");
+						return;
+					}
+				}
+			}
+			if (combatRoutine.Type == RotationType.AOE) // AoE Rotation
+			{
+				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && (!WoW.IsMounted || WoW.PlayerHasBuff("Divine Steed")))
+				{
+					if (WoW.CanCast("Judgment") && WoW.UnitPower >= 5 && WoW.IsSpellInRange("Judgment"))
+					{
+						WoW.CastSpell("Judgment");
+						return;
+					}
+					
+					if (WoW.UnitPower <= 1 && WoW.CanCast("Wake of Ashes") && WoW.IsSpellInRange("Crusader Strike"))
+					{
+						WoW.CastSpell("Wake of Ashes");
+						return;
+					}
+					if (WoW.UnitPower >=4 && WoW.CanCast("DivineStorm") && WoW.IsSpellInRange("Crusader Strike") && WoW.TargetHasDebuff("Judgment"))
+					{
+						WoW.CastSpell("DivineStorm");
+						return;
+					}
+					if (WoW.CanCast("Crusade") && WoW.UnitPower >= 5 && WoW.TargetHasDebuff("Judgment") && UseCooldowns)
+					{
+						WoW.CastSpell("Crusade");
+						return;
+					}
+					if (WoW.CanCast("Execution Sentence") && WoW.UnitPower >= 3 && WoW.IsSpellInRange("Execution Sentence") && !WoW.TargetHasDebuff("Execution Sentence") && WoW.TargetHasDebuff("Judgment"))
+					{
+						WoW.CastSpell("Execution Sentence");
+						return;
+					}
+					if (WoW.CanCast("Blade of Justice") && WoW.UnitPower <= 3 && WoW.IsSpellInRange("Blade of Justice") && WoW.Talent (4) == 2) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Blade of Justice");
+						return;
+					}
+					if (WoW.CanCast("Göttlicher Hammer") && WoW.UnitPower <= 3 && WoW.IsSpellInRange("Crusader Strike") && WoW.Talent (4) == 3) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Göttlicher Hammer");
+						return;
+					}
+					if (WoW.CanCast("Crusader Strike") && WoW.UnitPower < 5 && WoW.PlayerSpellCharges("Crusader Strike") >= 0 && WoW.IsSpellInRange("Crusader Strike"))
+					{
+						WoW.CastSpell("Crusader Strike");
+						return;
+					}
+					if (WoW.CanCast("Blade of Justice") && WoW.IsSpellInRange("Blade of Justice") && WoW.Talent (4) == 2) 
+					{
+						WoW.CastSpell("Blade of Justice");
+						return;
+					}
+					if (WoW.CanCast("Göttlicher Hammer") && WoW.IsSpellInRange("Crusader Strike") && WoW.Talent (4) == 3) // Higher Priority because it can generate 2 holy power in 1 go
+					{
+						WoW.CastSpell("Göttlicher Hammer");
+						return;
+					}
+				}
+			}
+		}
+	}
 }
 
 /*
 [AddonDetails.db]
 AddonAuthor=WiNiFiX
-AddonName=CloudMagic
+AddonName=smartie
 WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,35395,Crusader Strike,Y
@@ -158,6 +216,8 @@ Spell,231895,Crusade,E
 Spell,205273,Wake of Ashes,D7
 Spell,203538,Greater Blessing of Kings,D9
 Spell,203539,Greater Blessing of Wisdom,D0
+Spell,53385,DivineStorm,D3
+Spell,198034,Göttlicher Hammer,D5
 Aura,197277,Judgment
 Aura,213757,Execution Sentence
 Aura,203538,Greater Blessing of Kings

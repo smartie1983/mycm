@@ -1,6 +1,3 @@
-// winifix@gmail.com
-// ReSharper disable UnusedMember.Global
-
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -429,35 +426,36 @@ namespace CloudMagic.Rotation
             RetToDef = RTDint.Checked;
         }
 
+        public override int SINGLE 
+		{
+			get 
+			{ 
+				return 1; 
+			} 
+		}
+		public override int CLEAVE 
+		{ 
+			get 
+			{ 
+				return 99;
+			} 
+		}
+        public override int AOE 
+		{ 
+			get 
+			{ 
+				return 4; 
+			} 
+		}
 
         public override void Stop()
         {
         }
-		
-		private static bool lastNamePlate = true;
-		
-		public void SelectRotation(int aoe, int cleave, int single)
-        {
-            int count = WoW.CountEnemyNPCsInRange;
-            if (!lastNamePlate)
-            {
-                combatRoutine.ChangeType(RotationType.SingleTarget);
-                lastNamePlate = true;
-            }
-            lastNamePlate = WoW.Nameplates;
-            if (count >= aoe)
-                combatRoutine.ChangeType(RotationType.AOE);
-            if (count == cleave)
-                combatRoutine.ChangeType(RotationType.SingleTargetCleave);
-            if (count <= single)
-                combatRoutine.ChangeType(RotationType.SingleTarget);
-		}
 
 		public override void Pulse()
         {
 			if (WoW.IsInCombat && !WoW.TargetIsPlayer && !WoW.IsMounted)
 			{	
-			SelectRotation(4, 100, 1 );
 		
 		// protection
         		
@@ -759,26 +757,6 @@ namespace CloudMagic.Rotation
 								&& !WoW.PlayerHasBuff("Meat Cleaver")
 								&& WoW.Rage <= 85)
 							{WoW.CastSpell("Whirlwind"); return;}
-							
-							/*if (WoW.CanCast("Whirlwind")
-								&& TFZFMint
-								&& WoW.Rage <= 99
-								&& !WoW.CanCast("Bloodthirst")
-								&& !WoW.CanCast("Raging Blow")
-								&& !WoW.CanCast("Rampage")
-								)
-							{WoW.CastSpell("Whirlwind"); return;}
-							
-							if (WoW.CanCast("Whirlwind")
-								&& !TFZFMint
-								&& WoW.Rage <= 85
-								&& !WoW.CanCast("Bloodthirst")
-								&& !WoW.CanCast("Raging Blow")
-								&& !WoW.CanCast("Rampage")
-								)
-							{WoW.CastSpell("Whirlwind"); return;}
-								
-								*/
 							}
 						
 						
@@ -998,7 +976,11 @@ namespace CloudMagic.Rotation
 				
 				if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)  
 				{
-							
+                    if (BattleC && !WoW.IsSpellOnCooldown("Battle Cry"))
+                    {
+                        WoW.CastSpell("Battle Cry");
+                        return;
+                    }		
                 //Normal ST rotation
                 if (!WoW.PlayerHasBuff("Battle Cry") && WoW.HasTarget && WoW.IsInCombat && WoW.IsSpellInRange("Mortal Strike"))
                 {	
@@ -1094,7 +1076,7 @@ namespace CloudMagic.Rotation
 
 
                 {
-                    if (WoW.CanCast("Avatar") && WoW.PlayerHasBuff("Battle Cry") && WoW.IsSpellOnCooldown("Battle Cry"))
+                    if (WoW.CanCast("Avatar") && WoW.PlayerHasBuff("Battle Cry") && WoW.IsSpellOnCooldown("Battle Cry") && WoW.Talent (3) == 3)
                     {
                         WoW.CastSpell("Avatar");
                         return;
@@ -1157,10 +1139,6 @@ namespace CloudMagic.Rotation
 			}
 			}
 			}
-            if (combatRoutine.Type == RotationType.AOE)
-            {
-                // Do AOE Stuff here
-            }
 			}
 		}
 	}
@@ -1170,7 +1148,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Lesion
-AddonName=CloudMagic
+AddonName=smartie
 WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,23922,Shield Slam,D1
@@ -1179,7 +1157,7 @@ Spell,6572,Revenge,D3
 Spell,6343,Thunder Clap,F9
 Spell,2565,Shield Block,D4
 Spell,190456,Ignore Pain,D5
-Spell,203526,Neltharion's Fury,F8
+Spell,203524,Neltharion's Fury,F8
 Spell,6552,Pummel,F3
 Spell,34428,Victory Rush,D9
 Spell,46968,Shockwave,None
@@ -1191,7 +1169,6 @@ Spell,23920,SpellReflect,D0
 Spell,1719,Battle Cry,F2
 Spell,0,HealthPotion,D7
 Spell,1,Healthstone,D8
-
 Spell,12294,Mortal Strike,D1
 Spell,167105,Colossus Smash,D2
 Spell,1464,Slam,D3
@@ -1203,7 +1180,6 @@ Spell,209577,Warbreaker,F1
 Spell,845,Cleave,F3
 Spell,1680,Whirlwind,D8
 Spell,227847,Bladestorm,D9
-
 Spell,205545,Odyn's Fury,D1
 Spell,23881,Bloodthirst,D2
 Spell,184367,Rampage,D3
@@ -1212,18 +1188,12 @@ Spell,100130,Furious Slash,D5
 Spell,118000,Dragon Roar,F1
 Spell,5308,FExecute,Z
 Spell,190411,Whirlwind,D6
-
-Item,5512,Healthstone,D8
-Item,127834,HealthPotion,D7
-
-
 Aura,2565,Shield Block
 Aura,132168,ShockWavestun
 Aura,202573,Vengeance Revenge
 Aura,202574,Vengeance Ignore Pain
 Aura,190456,Ignore Pain
 Aura,203576,Dragon Scales
-
 Aura,227847,Bladestorm
 Aura,107574,Avatar
 Aura,208086,Colossus Smash
@@ -1231,8 +1201,9 @@ Aura,209706,Shattered Defenses
 Aura,1719,Battle Cry
 Aura,207982,Focused Rage
 Aura,845,Cleave
-
 Aura,184362,Enrage
 Aura,206316,Massacre
 Aura,85739,Meat Cleaver
+Item,5512,Healthstone
+Item,127834,HealthPotion
 */

@@ -2,6 +2,7 @@
 // v1.0 First release
 // v1.1 many little bugs got fixed
 // v1.2 removed Levelchecks, cause its buggy
+// v1.3	Rotation changes for 7.2.5
 
 
 using System;
@@ -333,7 +334,7 @@ namespace CloudMagic.Rotation
 
         public override void Initialize()
         {
-            Log.Write("Welcome to the Guardian Druid v1.2 by smartie", Color.Green);
+            Log.Write("Welcome to the Guardian Druid v1.3 by smartie", Color.Green);
 	        Log.Write("All Talents supported and auto detected", Color.Green);		
             SettingsFormDFF = new SettingsFormDFF();
             SettingsForm = SettingsFormDFF;
@@ -633,7 +634,7 @@ namespace CloudMagic.Rotation
                             WoW.CastSpell("Thrash");
                             return;
                         }
-                        if (WoW.CanCast("Thrash") && WoW.TargetHasDebuff("Moonfire") && WoW.PlayerHasBuff("Incarnation") && !WoW.PlayerHasBuff("Gore"))
+                        if (WoW.CanCast("Thrash") && WoW.TargetHasDebuff("Moonfire") && WoW.PlayerHasBuff("Incarnation"))
                         {
                             WoW.CastSpell("Thrash");
                             return;
@@ -643,20 +644,15 @@ namespace CloudMagic.Rotation
                             WoW.CastSpell("Mangle");
 							return;
                         }
-                        if (WoW.CanCast("Mangle") && WoW.TargetHasDebuff("Moonfire") && WoW.PlayerHasBuff("Incarnation") && WoW.PlayerHasBuff("Gore"))
+                        if (WoW.CanCast("Maul") && WoW.Rage >= 45 && WoW.TargetHasDebuff("Moonfire") && WoW.HealthPercent >= 90)
                         {
-                            WoW.CastSpell("Mangle");
-							return;
+                            WoW.CastSpell("Maul");
+                            return;
                         }
                         if (WoW.CanCast("Swipe") && WoW.TargetHasDebuff("Moonfire") && WoW.IsSpellOnCooldown("Thrash") && WoW.IsSpellOnCooldown("Mangle"))
                         {
                             WoW.CastSpell("Swipe");
 							return;
-                        }
-                        if (WoW.CanCast("Maul") && WoW.Rage >= 80 && WoW.TargetHasDebuff("Moonfire") && WoW.HealthPercent >= 90)
-                        {
-                            WoW.CastSpell("Maul");
-                            return;
                         }
 					}
 				}

@@ -37,6 +37,27 @@ namespace CloudMagic.Rotation
         }
         #endregion
 
+        public override int SINGLE 
+		{
+			get 
+			{ 
+				return 1; 
+			} 
+		}
+		public override int CLEAVE 
+		{ 
+			get 
+			{ 
+				return 99;
+			} 
+		}
+        public override int AOE 
+		{ 
+			get 
+			{ 
+				return 3; 
+			} 
+		}
         #region Privates
         /// <summary>
         /// String for version number.

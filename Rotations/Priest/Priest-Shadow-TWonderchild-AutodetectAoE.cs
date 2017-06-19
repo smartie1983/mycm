@@ -513,13 +513,6 @@ namespace CloudMagic.Rotation
         //-Pulse--------------------//
         public override void Pulse()
         {
-            if (DetectKeyPress.GetKeyState(0x76) < 0)
-            {
-                UseCooldowns = !UseCooldowns;
-                Thread.Sleep(150);
-            }
-                
-
             if (WoW.IsInCombat)
                 interruptwatch.Start();
             else
@@ -555,33 +548,36 @@ namespace CloudMagic.Rotation
 
         private void SingleTargetRotation()
         {
-            if (!WoW.PlayerHasBuff(VOIDFORM_AURA) && WoW.Insanity >= 65 && !MoveCheck() && DotsUp())
-                SpellCast(VOID_ERUPTION);
-
-            if(WoW.PlayerHasBuff(VOIDFORM_AURA))
+            if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && !WoW.IsMounted)
             {
-                if(!MoveCheck() && VoidTorrentRadio2.Checked && DotsUp() && !WoW.PlayerHasBuff(T19_VOID) && WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))
-                    SpellCast(VOID_TORRENT);
-                if(WoW.PlayerHasBuff(T19_VOID) || DotsUp())
-                    SpellCast(VOID_BOLT);
-            }
+				if (!WoW.PlayerHasBuff(VOIDFORM_AURA) && WoW.Insanity >= 65 && !MoveCheck() && DotsUp())
+					SpellCast(VOID_ERUPTION);
 
-            if (!MoveCheck() && DotsUp() && !WoW.PlayerHasBuff(T19_VOID) && WoW.LastSpell != VOID_ERUPTION)
-                SpellCast(MIND_BLAST);
+				if(WoW.PlayerHasBuff(VOIDFORM_AURA))
+				{
+					if(!MoveCheck() && VoidTorrentRadio2.Checked && DotsUp() && !WoW.PlayerHasBuff(T19_VOID) && WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))
+						SpellCast(VOID_TORRENT);
+					if(WoW.PlayerHasBuff(T19_VOID) || DotsUp())
+						SpellCast(VOID_BOLT);
+				}
 
-            if(WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 2 && (WoW.Insanity <= 80 || (WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))) && WoW.TargetHealthPercent <= 20 && DotsUp())
-                SpellCast(SHADOW_WORD_DEATH);
-            if (WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 1 && WoW.Insanity <= txtSWD && WoW.TargetHealthPercent <= 20 && DotsUp())
-                SpellCast(SHADOW_WORD_DEATH);
+				if (!MoveCheck() && DotsUp() && !WoW.PlayerHasBuff(T19_VOID) && WoW.LastSpell != VOID_ERUPTION)
+					SpellCast(MIND_BLAST);
 
-            if ((!WoW.TargetHasDebuff(VAMPIRIC_TOUCH) || WoW.TargetDebuffTimeRemaining(VAMPIRIC_TOUCH) <= 400) && !MoveCheck() && WoW.LastSpell!= VAMPIRIC_TOUCH && !WoW.PlayerHasBuff(T19_VOID)) //Messy workaround to fix the double VT-Cast, since addon/BLizz API is returning weird values
-                SpellCast(VAMPIRIC_TOUCH);
+				if(WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 2 && (WoW.Insanity <= 80 || (WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))) && WoW.TargetHealthPercent <= 20 && DotsUp())
+					SpellCast(SHADOW_WORD_DEATH);
+				if (WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 1 && WoW.Insanity <= txtSWD && WoW.TargetHealthPercent <= 20 && DotsUp())
+					SpellCast(SHADOW_WORD_DEATH);
+
+				if ((!WoW.TargetHasDebuff(VAMPIRIC_TOUCH) || WoW.TargetDebuffTimeRemaining(VAMPIRIC_TOUCH) <= 400) && !MoveCheck() && WoW.LastSpell!= VAMPIRIC_TOUCH && !WoW.PlayerHasBuff(T19_VOID)) //Messy workaround to fix the double VT-Cast, since addon/BLizz API is returning weird values
+					SpellCast(VAMPIRIC_TOUCH);
                 
-            if ((!WoW.TargetHasDebuff(SHADOW_WORD_PAIN) || WoW.TargetDebuffTimeRemaining(SHADOW_WORD_PAIN) <= 300) && !WoW.PlayerHasBuff(T19_VOID))
-                SpellCast(SHADOW_WORD_PAIN);
+				if ((!WoW.TargetHasDebuff(SHADOW_WORD_PAIN) || WoW.TargetDebuffTimeRemaining(SHADOW_WORD_PAIN) <= 300) && !WoW.PlayerHasBuff(T19_VOID))
+					SpellCast(SHADOW_WORD_PAIN);
             
-            if(WoW.TargetHasDebuff(SHADOW_WORD_PAIN) && WoW.TargetHasDebuff(VAMPIRIC_TOUCH) && !MoveCheck() && WoW.IsSpellOnCooldown(MIND_BLAST) && !WoW.PlayerHasBuff(T19_VOID) && WoW.LastSpell != VOID_ERUPTION)
-                SpellCast(MIND_FLAY);
+				if(WoW.TargetHasDebuff(SHADOW_WORD_PAIN) && WoW.TargetHasDebuff(VAMPIRIC_TOUCH) && !MoveCheck() && WoW.IsSpellOnCooldown(MIND_BLAST) && !WoW.PlayerHasBuff(T19_VOID) && WoW.LastSpell != VOID_ERUPTION)
+					SpellCast(MIND_FLAY);
+			}
         }
 
         private void SpellCast(string spellName)

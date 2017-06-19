@@ -82,28 +82,11 @@ namespace CloudMagic.Rotation
 
         }
        public override void Pulse()
-        {
-			if (stopwatch.ElapsedMilliseconds == 0)
-                    {
-						stopwatch.Start ();
-						Log.WriteCloudMagic("The Cooldown toggle button is now Active (Numpad9). The delay is set to 500ms ( 0.5 second )", Color.Black);	
-						return;
-					}		
+        {		
             {
-			if (DetectKeyPress.GetKeyState(DetectKeyPress.VK_NUMPAD9) < 0)
-            {
-                if(stopwatch.ElapsedMilliseconds > 500)
-                { 
-                    combatRoutine.UseCooldowns = !combatRoutine.UseCooldowns;
-                    stopwatch.Restart();
-                }
-            }
             if (combatRoutine.Type == RotationType.SingleTarget)
-            {
-				
-				if (WoW.IsSpellInRange("Rupture") && WoW.IsInCombat)
-					
-				
+            {				
+				if (WoW.IsSpellInRange("Rupture") && WoW.IsInCombat && !WoW.IsMounted)				
 				{
 					if ( UseCooldowns &&
                         WoW.CanCast("Kingsbane") && WoW.CurrentComboPoints <= 4 && WoW.Energy >= 35 && WoW.PlayerHasBuff("Envenom") && WoW.PlayerBuffTimeRemaining("Envenom") >= 150 &&
@@ -235,7 +218,7 @@ namespace CloudMagic.Rotation
 
             if (combatRoutine.Type == RotationType.AOE || combatRoutine.Type == RotationType.SingleTargetCleave) // Do AoE Target Stuff here
             {
-                if (WoW.HasTarget && WoW.IsSpellInRange("Rupture") && WoW.IsInCombat)
+                if (WoW.HasTarget && WoW.IsSpellInRange("Rupture") && WoW.IsInCombat && !WoW.IsMounted)
 				{
 					if (WoW.Energy >= 35 && WoW.CurrentComboPoints <= 4 && WoW.CanCast("Fan Of Knives"))
 					{

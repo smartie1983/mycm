@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System;
@@ -485,11 +485,11 @@ namespace CloudMagic.Rotation
                 WoW.CastSpell("Rainfall");
                 return;
             }
-            /* if (CharInfo.Mana > 21 && WoW.Maelstrom > 20 && WoW.CanCast("Healing Surge") && WoW.HealthPercent < EnhLowHp && !WoW.IsSpellOnCooldown("Healing Surge")) //ASTRAL SHIFT - DMG REDUCTION if we are below 60% of HP
-             {
-                 WoW.CastSpell("Healing Surge");
-                 return;
-             }*/
+            if (WoW.Mana > 21 && WoW.Maelstrom > 20 && WoW.CanCast("Healing Surge") && WoW.HealthPercent < 40 && !WoW.IsSpellOnCooldown("Healing Surge")) //ASTRAL SHIFT - DMG REDUCTION if we are below 60% of HP
+            {
+                WoW.CastSpell("Healing Surge");
+                return;
+            }
             if (WoW.CanCast("Astral Shift") && WoW.HealthPercent < 60 && !WoW.IsSpellOnCooldown("Astral Shift")) //ASTRAL SHIFT - DMG REDUCTION if we are below 60% of HP
             {
                 WoW.CastSpell("Astral Shift");
@@ -543,8 +543,8 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Hamuel
-AddonName=Hamuel
-WoWVersion=Legion - 72500
+AddonName=smartie
+WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,57994,Wind Shear,NumPad1
 Spell,196884,Feral Lunge,F9
@@ -599,4 +599,3 @@ Aura,188089,Earthen spike
 Item,142117,Prolonged Power
 Item,142173,Collapsing Futures
 */
-

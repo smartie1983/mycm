@@ -976,10 +976,10 @@ namespace CloudMagic.Rotation
                         return;
                     }
                     //actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && (WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && (WoW.PlayerHasBuff("Power of the Maelstrom")
                     && WoW.PlayerHasBuff("Stormkeeper")) && combatRoutine.Type != RotationType.AOE)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_if+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
@@ -1041,9 +1041,9 @@ namespace CloudMagic.Rotation
                         return;
                     }
                     // actions.single_if +=/ lightning_bolt
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && !WoW.IsMoving)
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && !WoW.IsMoving)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_if+=/flame_shock,moving=1,target_if=refreshable
@@ -1126,10 +1126,10 @@ namespace CloudMagic.Rotation
                     }
 
                     //actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
                     && WoW.PlayerHasBuff("Stormkeeper"))
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time
@@ -1159,25 +1159,25 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Earthquake");
                         return;
                     }
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
                     && combatRoutine.Type != RotationType.AOE && !WoW.IsMoving)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
 
                     //actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
                     && combatRoutine.Type != RotationType.AOE && !WoW.IsMoving)
                     { //change target
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
                     && combatRoutine.Type != RotationType.AOE && !WoW.IsMoving && combatRoutine.Type != RotationType.AOE)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_lr+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down
@@ -1195,15 +1195,15 @@ namespace CloudMagic.Rotation
                     }
 
                     //actions.single_lr+=/lightning_bolt,target_if=debuff.lightning_rod.down
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && !WoW.TargetHasBuff("Lightning Rod")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && !WoW.TargetHasBuff("Lightning Rod")
                     && !WoW.IsMoving)
                     {
                         //change target
                     }
                     // actions.single_lr +=/ lightning_bolt
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && !WoW.IsMoving)
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && !WoW.IsMoving)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
 
@@ -1282,10 +1282,10 @@ namespace CloudMagic.Rotation
                         return;
                     }
                     //actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && WoW.PlayerHasBuff("Power of the Maelstrom")
                     && WoW.PlayerHasBuff("Stormkeeper") && combatRoutine.Type != RotationType.AOE && !WoW.IsMoving)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time
@@ -1344,9 +1344,9 @@ namespace CloudMagic.Rotation
                         return;
                     }
                     // actions.single_if +=/ lightning_bolt
-                    if (WoW.CanCast("Lightning Bolt", true, true, true, false, true) && !WoW.IsMoving)
+                    if (WoW.CanCast("Lightning Bolt2", true, true, true, false, true) && !WoW.IsMoving)
                     {
-                        WoW.CastSpell("Lightning Bolt");
+                        WoW.CastSpell("Lightning Bolt2");
                         return;
                     }
                     //actions.single_if+=/flame_shock,moving=1,target_if=refreshable
@@ -2057,6 +2057,7 @@ Spell,77472,Healing Wave,NumPad3
 Spell,1064,Chain Heal,NumPad4
 Spell,207778,Queen Heal,NumPad0
 Spell,2645,Ghost Wolf,E
+Spell,188196,Lightning Bolt2,D1
 Spell,3,raid3,U
 Spell,2,raid2,Y
 Spell,1,raid1,T

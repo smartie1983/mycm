@@ -85,23 +85,10 @@ namespace CloudMagic.Rotation
         {
             if (combatRoutine.Type == RotationType.SingleTarget) // Do Single Target Stuff here
             {
-				if (!coolDownStopWatch.IsRunning || coolDownStopWatch.ElapsedMilliseconds > 60000)
-							coolDownStopWatch.Restart();
-					if (DetectKeyPress.GetKeyState(DetectKeyPress.VK_MULTIPLY) < 0)  //Use cooldowns manage by *numButton
-					{
-						if (coolDownStopWatch.ElapsedMilliseconds > 1000)
-						{
-							combatRoutine.UseCooldowns = !combatRoutine.UseCooldowns;
-							//Log.Write("Cooldowns " + (combatRoutine.UseCooldowns ? "On" : "Off"));
-							coolDownStopWatch.Restart();
-						}
-					}
-                if (WoW.HasTarget && !WoW.PlayerIsChanneling && WoW.TargetIsEnemy && WoW.IsInCombat)
+				if (WoW.HasTarget && !WoW.PlayerIsChanneling && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
                 {
                     if (WoW.PlayerHasBuff("Metamorphosis"))
                     {
-						if (combatRoutine.UseCooldowns)
-						{
 							if (WoW.CanCast("Nemesis") && WoW.IsSpellInRange("Chaos Strike"))
 							{
 								WoW.CastSpell("Nemesis");
@@ -118,7 +105,6 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("FOTI");
 								return;
 							}
-						}
                         if (WoW.CanCast("Death Sweep") && WoW.IsSpellInRange("Chaos Strike") && WoW.Fury >= 15)
                         {
                             WoW.CastSpell("Death Sweep");
@@ -129,7 +115,7 @@ namespace CloudMagic.Rotation
                             WoW.CastSpell("Felblade"); //Felblade only at melee range to not make worse (if you need to gtfo)
                             return;
                         }
-                        if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(DetectKeyPress.VK_KEY_Z) < 0))
+                        if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(0x5A) < 0))
                         {																
                             WoW.CastSpell("Eye Beam"); //Use Eyebeam by Z press
                             return;
@@ -152,12 +138,12 @@ namespace CloudMagic.Rotation
                     }
 					if (combatRoutine.UseCooldowns)
 					{
-						if (WoW.CanCast("Nemesis") && WoW.IsSpellInRange("Chaos Strike"))
+						if (WoW.CanCast("Nemesis") && WoW.IsSpellInRange("Chaos Strike")&& UseCooldowns)
 						{
 							WoW.CastSpell("Nemesis");
 							return;
 						}
-						if (WoW.CanCast("Chaos Blades") && WoW.IsSpellInRange("Chaos Strike"))
+						if (WoW.CanCast("Chaos Blades") && WoW.IsSpellInRange("Chaos Strike") && UseCooldowns)
 						{
 							WoW.CastSpell("Chaos Blades");
 							return;
@@ -169,6 +155,11 @@ namespace CloudMagic.Rotation
 							return;
 						}
 					}
+					if (WoW.CanCast("FOTI") && WoW.IsSpellInRange("Chaos Strike"))
+					{
+						WoW.CastSpell("FOTI");
+						return;
+					}
                     if (WoW.CanCast("Blade Dance") && WoW.IsSpellInRange("Chaos Strike") && WoW.Fury >= 15)
                     {
                         WoW.CastSpell("Blade Dance");
@@ -179,7 +170,7 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Felblade"); //Felblade only at melee range to not make worse (if you need to gtfo)
                         return;
                     }
-                    if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(DetectKeyPress.VK_KEY_Z) < 0))
+                    if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(0x5A) < 0))
                     {
                        WoW.CastSpell("Eye Beam"); //Use Eyebeam by Z press
                         return;
@@ -312,7 +303,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Jedix
-AddonName=Pawn
+AddonName=smartie
 WoWVersion=Legion - 70100
 [SpellBook.db]
 Spell,198013,Eye Beam,D2
@@ -329,8 +320,8 @@ Spell,198589,Blur,D4
 Spell,211053,Fel Barrage,NumPad1
 Spell,232893,Felblade,NumPad1
 Spell,201467,FOTI,NumPad5
-Spell,211048,Chaos Blades,NumPad2
+Spell,247938,Chaos Blades,NumPad2
 Aura,162264,Metamorphosis
-Aura,211048,Chaos Blades
+Aura,247938,Chaos Blades
 Aura,208628,Momentum
 */

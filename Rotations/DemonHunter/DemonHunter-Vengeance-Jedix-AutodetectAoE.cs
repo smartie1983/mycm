@@ -115,7 +115,7 @@ namespace CloudMagic.Rotation
         {
             if (combatRoutine.Type == RotationType.SingleTarget) // Do Single Target Stuff here
             {
-                if (WoW.HasTarget && WoW.TargetIsEnemy && !WoW.PlayerIsChanneling && WoW.IsInCombat) //Pull need to do by yourself - to prevent a mess
+                if (WoW.HasTarget && WoW.TargetIsEnemy && !WoW.PlayerIsChanneling && WoW.IsInCombat && !WoW.IsMounted) //Pull need to do by yourself - to prevent a mess
                 {
                     if (WoW.CanCast("Metamorphosis") && WoW.HealthPercent <= ConfigFile.ReadValue<int>("Demonhunter", "Metamorphosis Usage Percent"))
                     {
@@ -367,7 +367,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Jedix
-AddonName=Pawn
+AddonName=smartie
 WoWVersion=Legion - 70100
 [SpellBook.db]
 Spell,203782,Shear,G

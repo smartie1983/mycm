@@ -451,25 +451,9 @@ namespace CloudMagic.Rotation
 
         public override void Pulse()
         {
-            if (stopwatch.ElapsedMilliseconds == 0)
-            {
-                stopwatch.Start();
-                Log.WriteCloudMagic("The Cooldown toggle button is now Active (Numpad9). The delay is set to 1000ms ( 1 second )", Color.Black);
-                return;
-            }
-            {
-                if (DetectKeyPress.GetKeyState(DetectKeyPress.VK_NUMPAD9) < 0)
-                {
-                    if (stopwatch.ElapsedMilliseconds > 1000)
-                    {
-                        combatRoutine.UseCooldowns = !combatRoutine.UseCooldowns;
-                        stopwatch.Restart();
-                    }
-                }
                 if (combatRoutine.Type == RotationType.SingleTarget)
-
-
-                    if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat)
+				{
+                    if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
                     {
                         if (UseCooldowns && RuneOfPower && WoW.PlayerSpellCharges("Rune of Power") >= 1 && WoW.SpellCooldownTimeRemaining("Combustion") >= 4000 &&
                             WoW.PlayerHasBuff("Hot Streak!") && !WoW.PlayerIsCasting && !WoW.IsMoving && !WoW.PlayerHasBuff("Rune of Power") && !WoW.IsSpellOnCooldown("Rune of Power") ||
@@ -676,6 +660,8 @@ namespace CloudMagic.Rotation
             }
             if (combatRoutine.Type == RotationType.AOE)
             {
+                if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
+                {
                 if (UseCooldowns && RuneOfPower && WoW.PlayerSpellCharges("Rune of Power") >= 1 && WoW.SpellCooldownTimeRemaining("Combustion") >= 4000 && WoW.PlayerHasBuff("Hot Streak!") &&
                     !WoW.PlayerIsCasting && !WoW.IsMoving && !WoW.PlayerHasBuff("Rune of Power") && !WoW.IsSpellOnCooldown("Rune of Power") ||
                     (UseCooldowns && RuneOfPower && !WoW.PlayerIsCasting && WoW.PlayerSpellCharges("Fire Blast") == 3 && WoW.PlayerSpellCharges("Phoenix's Flames") >= 2 && !WoW.IsMoving &&
@@ -878,7 +864,8 @@ namespace CloudMagic.Rotation
                 }
             }
         }
-    }
+		}
+	}
 }
 
 /*

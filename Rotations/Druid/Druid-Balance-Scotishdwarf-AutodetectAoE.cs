@@ -2200,8 +2200,8 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Daniel and Scotishdwarf
-AddonName=HideOrderHallBar
-WoWVersion=Legion - 72000
+AddonName=smartie
+WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,8921,Moonfire,D4
 Spell,93402,Sunfire,F8
