@@ -83,11 +83,11 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Battle Cry");
 					return;
 				}
-				if (WoW.IsSpellInRange("Mortal Strike") && WoW.CanCast("Trinket") &&!WoW.ItemOnCooldown("Trinket") && WoW.TargetHasDebuff("Colossus Smash") && WoW.PlayerHasBuff("Battle Cry"))
+				/*if (WoW.IsSpellInRange("Mortal Strike") && WoW.CanCast("Trinket") &&!WoW.ItemOnCooldown("Trinket") && WoW.TargetHasDebuff("Colossus Smash") && WoW.PlayerHasBuff("Battle Cry"))
 				{
 					WoW.CastSpell("Trinket");
 					return;
-				}
+				}*/
 				if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Battle Cry") && !WoW.IsSpellOnCooldown ("Blood Fury") && WoW.PlayerRace == "Orc" && UseCooldowns)
                 {
 					WoW.CastSpell("Blood Fury");
@@ -217,31 +217,54 @@ namespace CloudMagic.Rotation
 				}
 				if (combatRoutine.Type == RotationType.AOE)
 				{
-					if (WoW.CanCast("Bladestorm") && WoW.CountEnemyNPCsInRange > 8 && UseCooldowns)
+					if (WoW.TargetHealthPercent > 20)
 					{
-						WoW.CastSpell("Bladestorm");
-						return;
-					}
-					if (!WoW.WasLastCasted("Warbreaker") && !WoW.PlayerHasBuff("Bladestorm"))
-					{
+						if (WoW.CanCast("Bladestorm") && WoW.CountEnemyNPCsInRange > 8 && UseCooldowns)
+						{
+							WoW.CastSpell("Bladestorm");
+							return;
+						}
+						if (WoW.CanCast("Colossus Smash") && !WoW.TargetHasDebuff("Colossus Smash"))
+						{
+							WoW.CastSpell("Colossus Smash");
+							return;
+						}
+						if (WoW.CanCast("Warbreaker") && !WoW.TargetHasDebuff("Colossus Smash") && !WoW.PlayerHasBuff("Shattered Defenses") && WoW.IsSpellInRange("Mortal Strike"))
+						{
+							WoW.CastSpell("Warbreaker");
+							return;
+						}
 						if (WoW.CanCast("Cleave") && !WoW.PlayerHasBuff("Cleave") && !WoW.IsSpellOnCooldown("Cleave"))
 						{
 							WoW.CastSpell("Cleave");
 							return;
 						}
-						if (WoW.CanCast("Whirlwind") && WoW.Rage > 20 && WoW.IsSpellOnCooldown("Cleave"))
+						if (WoW.CanCast("Whirlwind") && WoW.Rage > 30 && WoW.IsSpellOnCooldown("Cleave"))
 						{
 							WoW.CastSpell("Whirlwind");
-							return;
-						}
-						if (WoW.CanCast("Colossus Smash") && WoW.Rage > 28 && !WoW.TargetHasDebuff("Colossus Smash") && WoW.IsSpellOnCooldown("Cleave"))
-						{
-							WoW.CastSpell("Colossus Smash");
 							return;
 						}
 						if (WoW.CanCast("Mortal Strike") && WoW.Rage > 28 && WoW.TargetHasDebuff("Colossus Smash") && WoW.IsSpellOnCooldown("Cleave"))
 						{
 							WoW.CastSpell("Mortal Strike");
+							return;
+						}
+					}
+					if (WoW.TargetHealthPercent <= 20)
+					{
+						if (WoW.CanCast("Colossus Smash") && !WoW.IsSpellOnCooldown("Colossus Smash") && !WoW.PlayerHasBuff("Shattered Defenses"))
+						{
+							WoW.CastSpell("Colossus Smash");
+							return;
+						}                 
+						if (WoW.CanCast("Execute") && WoW.Rage >= 18 && WoW.PlayerHasBuff("Shattered Defenses"))
+						{
+							WoW.CastSpell("Execute");
+							return;
+						}
+						if (WoW.CanCast("Execute") && !WoW.PlayerHasBuff("Shattered Defenses"))
+						{
+							WoW.CastSpell("Execute");
 							return;
 						}
 					}
