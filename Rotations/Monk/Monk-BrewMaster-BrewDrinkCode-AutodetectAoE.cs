@@ -63,11 +63,11 @@ namespace CloudMagic.Rotation
 
         public override void Pulse()
         {
-			if (!WoW.IsInCombat && WoW.HealthPercent <= 75 & WoW.Energy >= 30 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && !WoW.IsMounted)
+			/*if (!WoW.IsInCombat && WoW.HealthPercent <= 75 & WoW.Energy >= 30 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && !WoW.IsMounted)
 			{
 				WoW.CastSpell("Effuse");
 				return;
-			}
+			}*/
             if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && !WoW.IsMounted)
             {
 				if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave || combatRoutine.Type == RotationType.AOE)
