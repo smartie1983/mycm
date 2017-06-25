@@ -58,17 +58,47 @@ namespace CloudMagic.Rotation
         {
             if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && !WoW.IsMounted) //First things go first
             {
-                if (WoW.HealthPercent <= 60 && WoW.CanCast ("Heilende Woge") && WoW.Mana >= 7040)
+                if (WoW.HealthPercent <= 60 && WoW.CanCast ("Heilende Woge") && WoW.Mana >= 48400)
                 {
                     WoW.CastSpell("Heilende Woge");
                 }
+                if (WoW.CanCast("Astral Shift") && WoW.HealthPercent < 40 && !WoW.IsSpellOnCooldown("Astral Shift")) //ASTRAL SHIFT - DMG REDUCTION if we are below 40% of HP
+                {
+                    WoW.CastSpell("Astral Shift");
+                    return;
+                }
+                if (WoW.IsSpellInRange("Wind Shear") && !WoW.IsSpellOnCooldown("Wind Shear") && WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= 60 && !WoW.PlayerIsChanneling)
+                {
+                    WoW.CastSpell("Wind Shear");
+                    return;
+                }
+				if (WoW.CanCast("Ascendance") && !WoW.IsSpellOnCooldown("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && UseCooldowns) // && WoW.IsBoss) //use Ascendance on boss
+				{
+					WoW.CastSpell("Ascendance");
+					return;
+				}
+                if (!WoW.IsSpellOnCooldown("Fire Elemental") && WoW.TargetHasDebuff("Flame Shock") && UseCooldowns) // && WoW.IsBoss) // use Fire Elemental
+                {
+                    WoW.CastSpell("Fire Elemental");
+                    return;
+                }
+				if (WoW.IsSpellInRange("Wind Shear") && WoW.CanCast("Trinket") && WoW.TargetHasDebuff("Flame Shock") && !WoW.ItemOnCooldown("Trinket"))
+				{
+					WoW.CastSpell("Trinket");
+					return;
+				}
+				if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && !WoW.IsSpellOnCooldown ("Blood Fury") && WoW.PlayerRace == "Orc" && UseCooldowns)
+				{
+					WoW.CastSpell("Blood Fury");
+					return;
+				}
+				if (WoW.CanCast("Stormkeeper") && !WoW.IsSpellOnCooldown("Stormkeeper") && !WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock")) //Stormkeeper after ascendance
+				{
+					WoW.CastSpell("Stormkeeper");
+					return;
+				}
 				if (combatRoutine.Type == RotationType.SingleTarget) // Do Single Target Stuff here
 				{
-                    if (WoW.IsSpellInRange("Wind Shear") && WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= 60) //interupt every spell - need to add kickable spells
-                    {
-                        WoW.CastSpell("Wind Shear");
-                        return;
-                    }
                     if (WoW.CanCast("Totem Mastery") && !WoW.PlayerHasBuff("Totem Mastery")) //Totem mastery at beggining
                     {
                         WoW.CastSpell("Totem Mastery");
@@ -79,41 +109,26 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Flame Shock");
                         return;
                     }
-                    if (!WoW.IsSpellOnCooldown("Fire Elemental") && WoW.TargetHasDebuff("Flame Shock") && UseCooldowns) // && WoW.IsBoss) // use Fire Elemental
-                    {
-                        Log.Write("Boss detected, using Fire Elemental", Color.Purple);
-                        WoW.CastSpell("Fire Elemental");
-                        return;
-                    }
-                    if (WoW.CanCast("Ascendance") && !WoW.IsSpellOnCooldown("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && UseCooldowns) // && WoW.IsBoss) //use Ascendance
-                    {
-                        WoW.CastSpell("Ascendance");
-                        return;
-                    }
-					if (WoW.IsSpellInRange("Wind Shear") && WoW.CanCast("Trinket") && WoW.TargetHasDebuff("Flame Shock") && !WoW.ItemOnCooldown("Trinket"))
+					if (WoW.CanCast("Earthquake") && WoW.PlayerHasBuff("Free Earthquake") && WoW.TargetHasDebuff("Flame Shock"))
 					{
-						WoW.CastSpell("Trinket");
+						WoW.CastSpell("Earthquake");
 						return;
 					}
-					if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && !WoW.IsSpellOnCooldown ("Blood Fury") && WoW.PlayerRace == "Orc" && UseCooldowns)
-					{
-						WoW.CastSpell("Blood Fury");
-						return;
-					}
-                    /*if (WoW.CanCast("Stormkeeper") && !WoW.IsSpellOnCooldown("Stormkeeper") && !WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock")) //use stormkeeper after ascendance
-                    {
-                        WoW.CastSpell("Stormkeeper");
-                        return;
-                    }*/
-                    if (WoW.CanCast("Lightning Bolt") && WoW.PlayerHasBuff("Stormkeeper") && !WoW.IsMoving && WoW.TargetHasDebuff("Flame Shock")) //Filler with stormkeeper
+                    if (WoW.CanCast("Lightning Bolt") && WoW.PlayerHasBuff("Stormkeeper") && WoW.TargetHasDebuff("Flame Shock")) //Filler with stormkeeper
                     {
                         WoW.CastSpell("Lightning Bolt");
+						return;
                     }
                     if (WoW.CanCast("Elemental Mastery") && WoW.IsSpellOnCooldown("Elemental Mastery") && WoW.TargetHasDebuff("Flame Shock") && WoW.Talent (4) == 3) //use Elemental Mastery on CD
                     {
                         WoW.CastSpell("Elemental Mastery");
                         return;
                     }
+					if (WoW.CanCast("Elemental Blast") && WoW.IsSpellInRange("Wind Shear") && WoW.TargetHasDebuff("Flame Shock") && WoW.Talent (5) == 3)
+					{
+						WoW.CastSpell("Elemental Blast");
+						return;
+					}
                     if (WoW.CanCast("Earth Shock") && WoW.Maelstrom > 99) //Earth shock on 100 maelstrom
                     {
                         WoW.CastSpell("Earth Shock");
@@ -134,19 +149,9 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Lightning Bolt");
                         return;
                     }
-                    if (WoW.CanCast("Astral Shift") && WoW.HealthPercent < 40 && !WoW.IsSpellOnCooldown("Astral Shift")) //ASTRAL SHIFT - DMG REDUCTION if we are below 40% of HP
-                    {
-                        WoW.CastSpell("Astral Shift");
-                        return;
-                    }
                 }
 				if (combatRoutine.Type == RotationType.AOE) //cast chain light and earthguake, using CDs without fire elemental   
 				{
-					if (WoW.TargetIsCasting && WoW.IsSpellInRange("Wind Shear")) //interupt every spell - need to add kickable spells
-					{
-						WoW.CastSpell("Wind Shear");
-						return;
-					}
 					if (WoW.CanCast("Totem Mastery") && !WoW.PlayerHasBuff("Totem Mastery")) //Totem mastery at beggining
 					{
 						WoW.CastSpell("Totem Mastery");
@@ -157,26 +162,16 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Flame Shock");
 						return;
 					}
-					if (WoW.CanCast("Ascendance") && !WoW.IsSpellOnCooldown("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && UseCooldowns) // && WoW.IsBoss) //use Ascendance on boss
+					if (WoW.CanCast("Elemental Blast") && WoW.IsSpellInRange("Wind Shear") && WoW.TargetHasDebuff("Flame Shock") && WoW.Talent (5) == 3)
 					{
-						WoW.CastSpell("Ascendance");
+						WoW.CastSpell("Elemental Blast");
 						return;
 					}
-					if (WoW.IsSpellInRange("Wind Shear") && WoW.CanCast("Trinket") && WoW.TargetHasDebuff("Flame Shock") && !WoW.ItemOnCooldown("Trinket"))
+					if (WoW.CanCast("Earthquake") && WoW.PlayerHasBuff("Free Earthquake") && WoW.TargetHasDebuff("Flame Shock"))
 					{
-						WoW.CastSpell("Trinket");
+						WoW.CastSpell("Earthquake");
 						return;
 					}
-					if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock") && !WoW.IsSpellOnCooldown ("Blood Fury") && WoW.PlayerRace == "Orc" && UseCooldowns)
-					{
-						WoW.CastSpell("Blood Fury");
-						return;
-					}
-					/*if (WoW.CanCast("Stormkeeper") && !WoW.IsSpellOnCooldown("Stormkeeper") && !WoW.PlayerHasBuff("Ascendance") && WoW.TargetHasDebuff("Flame Shock")) //Stormkeeper after ascendance
-					{
-						WoW.CastSpell("Stormkeeper");
-						return;
-					}*/
 					if (WoW.CanCast("Lava Beam") && WoW.PlayerHasBuff("Ascendance") && !WoW.IsMoving && WoW.TargetHasDebuff("Flame Shock")) //Filler
 					{
 						WoW.CastSpell("Lava Beam");
@@ -193,7 +188,7 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Earthquake");
 						return;
 					}
-					if (WoW.CanCast("Chain Lightning") && WoW.PlayerHasBuff("Stormkeeper") && !WoW.IsMoving && WoW.TargetHasDebuff("Flame Shock")) //Chain with stormkeeper
+					if (WoW.CanCast("Chain Lightning") && WoW.PlayerHasBuff("Stormkeeper") && WoW.TargetHasDebuff("Flame Shock")) //Chain with stormkeeper
 					{
 						WoW.CastSpell("Chain Lightning");
 						return;
@@ -201,10 +196,6 @@ namespace CloudMagic.Rotation
 					if (WoW.CanCast("Chain Lightning") && !WoW.IsMoving && WoW.TargetHasDebuff("Flame Shock")) //Filler
 					{
 						WoW.CastSpell("Chain Lightning");
-					}
-					if (WoW.CanCast("Astral Shift") && WoW.HealthPercent < 40 && !WoW.IsSpellOnCooldown("Astral Shift")) //ASTRAL SHIFT - DMG REDUCTION if we are below 40% of HP
-					{
-						WoW.CastSpell("Astral Shift");
 					}
 				}
             }
@@ -237,10 +228,12 @@ Spell,57994,Wind Shear,F11
 Spell,133585,Trinket,D0
 Spell,33697,Blood Fury,NumPad1
 Spell,8004,Heilende Woge,F1
+Spell,117014,Elemental Blast,D5
 Aura,188389,Flame Shock
 Aura,210659,Totem Mastery
 Aura,114050,Ascendance
 Aura,77762,Lava Surge
 Aura,205495,Stormkeeper
+Aura,208723,Free Earthquake
 Item,133585,Trinket
 */
