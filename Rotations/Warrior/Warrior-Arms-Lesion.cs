@@ -83,7 +83,7 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Battle Cry");
 					return;
 				}
-				if (WoW.CanCast("Bladestorm") && UseCooldowns && !WoW.PlayerHasBuff("Battle Cry") && WoW.IsSpellInRange("Mortal Strike"))
+				if (WoW.CanCast("Bladestorm") && UseCooldowns && WoW.TargetHasDebuff("Colossus Smash") && !WoW.PlayerHasBuff("Battle Cry") && WoW.IsSpellInRange("Mortal Strike"))
 				{
 					WoW.CastSpell("Bladestorm");
 					return;
