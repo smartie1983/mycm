@@ -109,11 +109,11 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Phantom");
                         return;
                     }
-					if (WoW.IsSpellInRange("Agony") && WoW.CanCast("Trinket") &&!WoW.ItemOnCooldown("Trinket") && WoW.TargetHasDebuff("Agony") && WoW.TargetHasDebuff("Corruption"))
+					/*if (WoW.IsSpellInRange("Agony") && WoW.CanCast("Trinket") &&!WoW.ItemOnCooldown("Trinket") && WoW.TargetHasDebuff("Agony") && WoW.TargetHasDebuff("Corruption"))
 					{
 						WoW.CastSpell("Trinket");
 						return;
-					}
+					}*/
 					if (WoW.CanCast("Berserk") && UseCooldowns && !WoW.IsSpellOnCooldown ("Berserk") && WoW.PlayerRace == "Troll")
                     {
                         WoW.CastSpell("Berserk");
@@ -177,7 +177,7 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Corruption");
                         return;
                     }
-                    if (WoW.CanCast("Seed of Corruption") && WoW.IsSpellInRange("Agony") && !WoW.TargetHasDebuff("Seed of Corruption") && !WoW.IsMoving && WoW.CurrentSoulShards >= 1)
+                    if (WoW.CanCast("Seed of Corruption") && WoW.IsSpellInRange("Agony") && !WoW.TargetHasDebuff("Seed of Corruption") && !WoW.IsMoving && WoW.CurrentSoulShards >= 1 && !WoW.WasLastCasted("Seed of Corruption"))
                     {
                         WoW.CastSpell("Seed of Corruption");
                         return;
