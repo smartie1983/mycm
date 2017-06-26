@@ -1,3 +1,12 @@
+// ##changelog##
+// v0.1 initial release
+// v0.2 added more Talents
+
+// ##todo##
+// -add Shadowburn
+// -cleanup
+// -add aoe rota
+
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -47,8 +56,10 @@ namespace CloudMagic.Rotation
 		}
         public override void Initialize()
         {
-            Log.Write("Welcome to smartie`s Destruction");
-            Log.Write("Talents are specced the following: 2,1,1,3,3,2,3");
+            Log.Write("Welcome to smartie`s Destruction Warlock v0.2", Color.Green);
+            Log.Write("All Talents are supported and auto detected", Color.Green);
+            Log.Write("Hold down Alt for Havoc cast - You will need a Mouseover macro for that", Color.Red);
+			Log.Write("#showtooltip Havoc /cast [@mouseover,harm] Havoc; [harm] Havoc", Color.Red);
         }
         public override void Stop()
         {
@@ -59,27 +70,22 @@ namespace CloudMagic.Rotation
             {
 				if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)
 				{
-					if (WoW.CanCast("UnendingResolve") && WoW.HealthPercent <= 35)
+					if (WoW.CanCast("UnendingResolve") && WoW.HealthPercent <= 20 && WoW.HealthPercent != 0)
 					{
 						WoW.CastSpell("UnendingResolve");
 						return;
 					}
-					if (!WoW.IsMoving && WoW.CanCast("DrainLife") && WoW.HealthPercent <= 20)
-					{
-						WoW.CastSpell("DrainLife");
-						return;
-					}
-					if (WoW.CanCast("Healthstone") && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent <= 40 && WoW.HealthPercent != 0)
+					if (WoW.CanCast("Healthstone") && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent <= 30 && WoW.HealthPercent != 0)
 					{
 						WoW.CastSpell("Healthstone");
 						return;
 					}
-					if (WoW.CanCast("DoomGuard") && !WoW.IsSpellOnCooldown("DoomGuard") && WoW.PlayerHasBuff("Soul Harvest") && UseCooldowns)
+					if (WoW.CanCast("DoomGuard") && !WoW.IsSpellOnCooldown("DoomGuard") && (WoW.PlayerHasBuff("Soul Harvest") && WoW.Talent (4) == 3 || WoW.Talent (4) != 3) && UseCooldowns)
                     {
                         WoW.CastSpell("DoomGuard");
                         return;
                     }
-					if (WoW.CanCast("Soul Harvest") && !WoW.IsMoving && UseCooldowns && !WoW.IsSpellOnCooldown("Soul Harvest") && WoW.CurrentSoulShards >= 4)
+					if (WoW.CanCast("Soul Harvest") && !WoW.IsMoving && UseCooldowns && !WoW.IsSpellOnCooldown("Soul Harvest") && WoW.CurrentSoulShards >= 4 && WoW.Talent (4) == 3)
 					{
                         WoW.CastSpell("Soul Harvest");
                         return;
@@ -89,48 +95,44 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Berserk");
                         return;
                     }
-					if (WoW.CanCast("Havoc") && !WoW.IsSpellOnCooldown("Havoc") && Control.ModifierKeys == Keys.Alt)
-                    /* Havoc on mouseover target, create macro to use: #showtooltip /cast [target=mouseover,harm,exists,nodead] Havoc; Havoc */
+					if (WoW.CanCast("Havoc") && !WoW.IsSpellOnCooldown("Havoc") && Control.ModifierKeys == Keys.Alt) // you will need a mouseover macro
 					{
 						WoW.CastSpell("Havoc");
 						return;
 					}
-					if (!WoW.TargetHasDebuff("AuraImmolate") && !WoW.IsMoving)
+					if (!WoW.IsMoving)
 					{
-						if (WoW.HasTarget && WoW.CanCast("DimRift") && WoW.PlayerSpellCharges("DimRift") == 3)
+						if (WoW.CanCast("Life Tap") && !WoW.PlayerHasBuff("Life Tap") && WoW.HealthPercent >= 40 && WoW.Talent (2) == 3)
 						{
-							WoW.CastSpell("DimRift");
-							return;
+							WoW.CastSpell("Life Tap");
+							return;						
 						}
-						if (!WoW.WasLastCasted("Immolate") && WoW.CanCast("Immolate"))
+						if ((!WoW.TargetHasDebuff("Immolate") || WoW.TargetDebuffTimeRemaining("Immolate") <= 420) && !WoW.WasLastCasted("Immolate") && WoW.CanCast("Immolate"))
 						{
 							WoW.CastSpell("Immolate");
 							return;
 						}
-					}
-					if (WoW.TargetHasDebuff("AuraImmolate") && !WoW.IsMoving)
-					{
 						if (WoW.CanCast("DimRift") && WoW.PlayerSpellCharges("DimRift") == 3)
 						{
 							WoW.CastSpell("DimRift");
 							return;
 						}
-						if (WoW.TargetDebuffTimeRemaining("AuraImmolate") >= 1000 && WoW.CanCast("Conflagrate"))
+						if (WoW.CanCast("Channel Demonfire") && !WoW.IsSpellOnCooldown("Channel Demonfire") && WoW.TargetHasDebuff("Immolate") && WoW.TargetDebuffTimeRemaining("Immolate") >= 500 && WoW.Talent (7) == 2 )
+						{
+							WoW.CastSpell("Channel Demonfire");
+							return;	
+						}
+						if (WoW.TargetDebuffTimeRemaining("Immolate") >= 1000 && WoW.CanCast("Conflagrate"))
 						{
 							WoW.CastSpell("Conflagrate");
 							return;
 						}
-						if ((!WoW.TargetHasDebuff("AuraImmolate") || WoW.TargetDebuffTimeRemaining("AuraImmolate") <= 420) && !WoW.WasLastCasted("Immolate") && WoW.CanCast("Immolate"))
-						{
-							WoW.CastSpell("Immolate");
-							return;
-						}
-						if (WoW.TargetDebuffTimeRemaining("AuraImmolate") >= 1000 && WoW.PlayerSpellCharges("Conflagrate") == 1 && WoW.WasLastCasted("Conflagrate") && WoW.CanCast("Conflagrate"))
+						if (WoW.TargetDebuffTimeRemaining("Immolate") >= 1000 && WoW.PlayerSpellCharges("Conflagrate") == 1 && WoW.WasLastCasted("Conflagrate") && WoW.CanCast("Conflagrate"))
 						{
 							WoW.CastSpell("Conflagrate");
 							return;
 						}
-						if (WoW.PlayerHasBuff("AuraConflagrateBuff") && WoW.TargetHasDebuff("AuraChaosBolt") && WoW.CanCast("Conflagrate") && WoW.CurrentSoulShards <= 4 && WoW.CanCast("Conflagrate"))
+						if (WoW.PlayerHasBuff("Conflagrate") && WoW.TargetHasDebuff("ChaosBolt") && WoW.CanCast("Conflagrate") && WoW.CurrentSoulShards <= 4 && WoW.CanCast("Conflagrate"))
 						{
 							WoW.CastSpell("Conflagrate");
 							return;
@@ -140,12 +142,12 @@ namespace CloudMagic.Rotation
 							WoW.CastSpell("Conflagrate");
 							return;
 						}
-						if (WoW.CanCast("ServiceImp") && WoW.CurrentSoulShards >= 1 && (UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") || !UseCooldowns))
+						if (WoW.CanCast("ServiceImp") && WoW.CurrentSoulShards >= 1 && (UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") && WoW.Talent (4) == 3 || !UseCooldowns || WoW.Talent (4) != 3 && UseCooldowns))
 						{
 							WoW.CastSpell("ServiceImp");
 							return;
 						}
-						if (WoW.CanCast("ChaosBolt") && WoW.CurrentSoulShards > 3 && (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") >= 500 || UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") || !UseCooldowns))
+						if (WoW.CanCast("ChaosBolt") && WoW.CurrentSoulShards > 3 && (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") >= 500 && WoW.Talent (4) == 3 || UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") && WoW.Talent (4) == 3 || !UseCooldowns || WoW.Talent (4) != 3 && UseCooldowns))
 						{
 							WoW.CastSpell("ChaosBolt");
 							return;
@@ -155,17 +157,17 @@ namespace CloudMagic.Rotation
 							WoW.CastSpell("DimRift");
 							return;
 						}
-						if (WoW.CanCast("ChaosBolt") && WoW.CurrentSoulShards >= 2 && (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") >= 500 || UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") || !UseCooldowns))
+						if (WoW.CanCast("ChaosBolt") && WoW.CurrentSoulShards >= 2 && (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") >= 500 && WoW.Talent (4) == 3 || UseCooldowns && WoW.PlayerHasBuff("Soul Harvest") && WoW.Talent (4) == 3 || !UseCooldowns || WoW.Talent (4) != 3 && UseCooldowns))
 						{
 							WoW.CastSpell("ChaosBolt");
 							return;
 						}
-						if (WoW.CanCast("Incinerate") && WoW.CurrentSoulShards <= 1 || (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") <= 500 && WoW.CurrentSoulShards < 4))
+						if (WoW.CanCast("Incinerate") && WoW.CurrentSoulShards <= 1 || (UseCooldowns && WoW.SpellCooldownTimeRemaining("Soul Harvest") <= 500 && WoW.CurrentSoulShards < 4 && WoW.Talent (4) == 3))
 						{
 							WoW.CastSpell("Incinerate");
 							return;
 						}
-						if (WoW.CanCast("Incinerate") && WoW.TargetHasDebuff("AuraChaosBolt") && WoW.TargetDebuffTimeRemaining("AuraChaosBolt") >= 200 && WoW.CurrentSoulShards <= 3)
+						if (WoW.CanCast("Incinerate") && WoW.TargetHasDebuff("ChaosBolt") && WoW.TargetDebuffTimeRemaining("ChaosBolt") >= 200 && WoW.CurrentSoulShards <= 3)
 						{
 							WoW.CastSpell("Incinerate");
 							return;
@@ -209,9 +211,12 @@ Spell,234153,DrainLife,F2
 Spell,26297,Berserk,D0
 Spell,5512,Healthstone,NumPad1
 Spell,196098,Soul Harvest,D9
+Spell,196447,Channel Demonfire,D7
+Spell,1454,Life Tap,F6
+Aura,235156,Life Tap
 Aura,196098,Soul Harvest
-Aura,157736,AuraImmolate
-Aura,196414,AuraChaosBolt
-Aura,196546,AuraConflagrateBuff
+Aura,157736,Immolate
+Aura,196414,ChaosBolt
+Aura,196546,Conflagrate
 Item,5512,Healthstone
 */
